@@ -1,0 +1,140 @@
+openapi: 3.0.3
+info:
+  title: PRICES API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+
+
+paths:
+  /prices:
+    get:
+      summary: Get price
+      description: Get prices based on the provided parameters.
+      operationId: getPrice
+      parameters:
+        - name: time
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "10:00"
+          description: "The time of the price, e.g. 10:00"
+        - name: day
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "2020-06-14"
+          description: "The start day of the price, e.g. 2020-06-14"
+        - name: productId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: "35455"
+          description: "The id of the product, e.g. 35455"
+        - name: brandId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: "1"
+          description: "The id of the brand, e.g. 1"
+        - name: utc
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int16
+            example: "2"
+            default: 2
+          description: "The UTC selected by the client, e.g. 2"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceResponse'
+        "400":
+          description: Invalid arguments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid price filter
+                  description:
+                    type: string
+                    description: "The error description"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    PriceResponse:
+      type: object
+      properties:
+        tariffId:
+          type: integer
+          format: int64
+          description: "The id of the tariff to apply"
+          example: 35455
+        productId:
+          type: integer
+          format: int64
+          description: "The ID of the product"
+          example: 35455
+        brandId:
+          type: integer
+          format: int64
+          description: "The ID of the brand"
+          example: 1
+        price:
+          type: number
+          format: double
+          description: "The price to apply"
+          example: 49.99
+        currency:
+          type: string
+          description: "The currency of the price"
+          example: "EUR"
+        startDay:
+          type: string
+          description: "The start date of the price"
+          example: "2020-06-14"
+        endDay:
+          type: string
+          description: "The end date of the price"
+          example: "2020-06-14"
+        startTime:
+          type: string
+          description: "The start time of the price"
+          example: "00:00"
+        endTime:
+          type: string
+          description: "The end time of the price"
+          example: "23:59"
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        description:
+          type: string
+
+
+
